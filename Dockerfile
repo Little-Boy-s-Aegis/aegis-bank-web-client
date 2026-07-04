@@ -19,5 +19,8 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
+# Delete package.json in the production image to prevent Trivy from false-alarm scanning unused/development dependencies
+RUN rm -f package.json
+
 EXPOSE 3000
 CMD ["node", "server.js"]

@@ -19,8 +19,15 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Delete package.json in the production image to prevent Trivy from false-alarm scanning unused/development dependencies
-RUN rm -f package.json
+# Harden container: delete package.json and pre-installed package managers (npm, yarn, corepack) to eliminate all transitively bundled CVEs
+RUN rm -f package.json && \
+    rm -rf /usr/local/lib/node_modules/npm \
+           /usr/local/lib/node_modules/corepack \
+           /opt/yarn-v1.22.22 \
+           /usr/local/bin/npm \
+           /usr/local/bin/npx \
+           /usr/local/bin/yarn \
+           /usr/local/bin/yarnpkg
 
 EXPOSE 3000
 CMD ["node", "server.js"]

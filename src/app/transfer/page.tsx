@@ -51,12 +51,49 @@ export default function TransferPage() {
     setError('');
     setSuccess('');
 
+    const targetTrimmed = targetAccount.trim();
+    const sourceTrimmed = sourceAccount.trim();
+
+    // 1. Account format validation
+    const accRegex = /^ACC-\d{6}$/;
+    if (!accRegex.test(targetTrimmed)) {
+      setError('Recipient account number must be in ACC-XXXXXX format (e.g., ACC-123456).');
+      setLoading(false);
+      return;
+    }
+
+    if (sourceTrimmed === targetTrimmed) {
+      setError('Source and recipient account numbers must be different.');
+      setLoading(false);
+      return;
+    }
+
+    // 2. Positive amount validation
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      setError('Transfer amount must be a valid positive number greater than zero.');
+      setLoading(false);
+      return;
+    }
+
+    // 3. HTML sanitization for XSS prevention
+    const cleanDescription = description
+      .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '')
+      .replace(/<\/?[^>]+(>|$)/g, '')
+      .trim();
+
+    if (!cleanDescription) {
+      setError('Description cannot be empty or contain only HTML tags.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const result = await transferMoney({
-        sourceAccountNumber: sourceAccount.trim(),
-        targetAccountNumber: targetAccount.trim(),
-        amount: amount,
-        description: description,
+        sourceAccountNumber: sourceTrimmed,
+        targetAccountNumber: targetTrimmed,
+        amount: parsedAmount,
+        description: cleanDescription,
       });
 
       setSuccess(`Transfer completed. Reference ID: ${result.transactionId}`);

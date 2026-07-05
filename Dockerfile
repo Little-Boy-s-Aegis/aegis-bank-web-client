@@ -1,6 +1,15 @@
 # Build stage
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Accept backend URLs as build args for Next.js rewrites
+ARG BE_BACKEND_URL=http://aegis-be-backend:8080
+ARG DASHBOARD_BACKEND_URL=http://aegis-dashboard-backend:8082
+ARG DASHBOARD_FRONTEND_URL=http://aegis-dashboard-frontend:3001
+ENV BE_BACKEND_URL=$BE_BACKEND_URL
+ENV DASHBOARD_BACKEND_URL=$DASHBOARD_BACKEND_URL
+ENV DASHBOARD_FRONTEND_URL=$DASHBOARD_FRONTEND_URL
+
 COPY package*.json ./
 RUN npm ci
 COPY . .

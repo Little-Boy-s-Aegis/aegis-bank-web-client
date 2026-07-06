@@ -69,8 +69,8 @@ export default function SecurityControlRoom() {
       label: 'Stored Cross-Site Scripting (XSS) Filter',
       description: 'Cleans, escapes, and sanitizes transaction descriptions before database writes.',
       flag: status.xssEnabled,
-      vulnCode: `// Saving raw input directly (Vulnerable)\nTransaction tx = new Transaction(..., description);\ntxRepository.save(tx);\n\n// React dangerouslySetInnerHTML\n<div {...{ ["dangerously" + "Set" + "InnerHTML"]: { __html: tx.description } }} />`,
-      secureCode: `// HTML escaping input on backend (Secure)\nString safeDescription = HtmlUtils.htmlEscape(description);\nTransaction tx = new Transaction(..., safeDescription);\ntxRepository.save(tx);`
+      vulnCode: `// Saving raw input directly (Vulnerable)\nTransaction tx = new Transaction(..., description);\ntxRepository.save(tx);\n\n// React dangerouslySetInnerHTML (removed)\n<div dangerouslySetInnerHTML={{ __html: tx.description }} />`,
+      secureCode: `// HTML escaping input on backend (Secure)\nString safeDescription = HtmlUtils.htmlEscape(description);\nTransaction tx = new Transaction(..., safeDescription);\ntxRepository.save(tx);\n\n// React safe text rendering (A-07 fix)\n<div>{tx.description}</div>`
     },
     {
       key: 'idor',

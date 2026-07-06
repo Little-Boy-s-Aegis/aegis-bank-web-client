@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { login } from '@/api/auth';
+import { tokenStorage } from '@/api/tokenStorage';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function LoginPage() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
+    if (tokenStorage.getItem('token')) {
       router.push('/dashboard');
     }
   }, [router]);
@@ -27,8 +28,8 @@ export default function LoginPage() {
 
     try {
       const response = await login({ username, password });
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      tokenStorage.setItem('token', response.token);
+      tokenStorage.setItem('user', JSON.stringify(response.user));
       
       setSuccess('Sign in successful. Redirecting...');
       setTimeout(() => {

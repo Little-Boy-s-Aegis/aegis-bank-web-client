@@ -2,6 +2,35 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: http://localhost:8080 http://localhost:8082 http://localhost:3001 http://localhost:3000; frame-ancestors 'none';",
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+    ];
+  },
   async rewrites() {
     const beBackendUrl = process.env.BE_BACKEND_URL || 'http://localhost:8080';
     const dashboardBackendUrl = process.env.DASHBOARD_BACKEND_URL || 'http://localhost:8082';

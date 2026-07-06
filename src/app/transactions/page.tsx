@@ -7,6 +7,8 @@ import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
 import { getTransactionHistory, TransactionItem } from '@/api/transactions';
 
+import { tokenStorage } from '@/api/tokenStorage';
+
 export default function TransactionsPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -17,8 +19,8 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
+      const token = tokenStorage.getItem('token');
+      const userData = tokenStorage.getItem('user');
       if (!token || !userData) {
         router.replace('/login');
       } else {

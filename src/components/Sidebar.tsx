@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { tokenStorage } from '@/api/tokenStorage';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -11,7 +12,7 @@ export default function Sidebar() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const userData = localStorage.getItem('user');
+      const userData = tokenStorage.getItem('user');
       if (userData) {
         setUser(JSON.parse(userData));
       }
@@ -19,8 +20,8 @@ export default function Sidebar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    tokenStorage.removeItem('token');
+    tokenStorage.removeItem('user');
     router.replace('/login');
   };
 

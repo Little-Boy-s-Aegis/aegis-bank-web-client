@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { tokenStorage } from './tokenStorage';
 
 const apiClient = axios.create({
   baseURL: '/api-bank',
@@ -11,7 +12,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
+      const token = tokenStorage.getItem('token');
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -31,8 +32,8 @@ apiClient.interceptors.response.use(
       if (error.response.status === 401) {
         // Only redirect if we are not already on the login page
         if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+          tokenStorage.removeItem('token');
+          tokenStorage.removeItem('user');
           window.location.href = '/login';
         }
       }

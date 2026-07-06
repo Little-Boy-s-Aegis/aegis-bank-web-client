@@ -8,6 +8,8 @@ import Navbar from '@/components/Navbar';
 import { getAccountDetails } from '@/api/accounts';
 import { transferMoney } from '@/api/transactions';
 
+import { tokenStorage } from '@/api/tokenStorage';
+
 export default function TransferPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -25,8 +27,8 @@ export default function TransferPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
+      const token = tokenStorage.getItem('token');
+      const userData = tokenStorage.getItem('user');
       if (!token || !userData) {
         router.replace('/login');
       } else {

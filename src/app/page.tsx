@@ -2,12 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { tokenStorage } from '@/api/tokenStorage';
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = tokenStorage.getItem('token');
     if (token) {
       router.replace('/dashboard');
     } else {

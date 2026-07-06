@@ -7,14 +7,16 @@ import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
 import { getSecurityStatus, getSecurityLogs, toggleSecuritySetting, clearSecurityLogs, SecurityLogItem } from '@/api/security';
 
+import { tokenStorage } from '@/api/tokenStorage';
+
 export default function SecurityControlRoom() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
+      const token = tokenStorage.getItem('token');
+      const userData = tokenStorage.getItem('user');
       if (!token || !userData) {
         router.replace('/login');
       } else {

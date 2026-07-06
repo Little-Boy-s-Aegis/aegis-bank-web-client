@@ -9,14 +9,16 @@ import { getAccountDetails } from '@/api/accounts';
 import { getTransactionHistory } from '@/api/transactions';
 import Link from 'next/link';
 
+import { tokenStorage } from '@/api/tokenStorage';
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
+      const token = tokenStorage.getItem('token');
+      const userData = tokenStorage.getItem('user');
       if (!token || !userData) {
         router.replace('/login');
       } else {

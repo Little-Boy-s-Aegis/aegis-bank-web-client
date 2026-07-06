@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: http://localhost:8080 http://localhost:8082 http://localhost:3001 http://localhost:3000; frame-ancestors 'none';",
+            value: "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; frame-ancestors 'none';",
           },
           {
             key: 'X-Frame-Options',

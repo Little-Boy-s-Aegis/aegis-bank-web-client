@@ -15,7 +15,6 @@ export default function TransactionsPage() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [sqlErrorDetails, setSqlErrorDetails] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -34,15 +33,11 @@ export default function TransactionsPage() {
     user ? `transactions-${user.accountNumber}-${query}` : null,
     async () => {
       setErrorMsg('');
-      setSqlErrorDetails('');
       try {
         return await getTransactionHistory(user.accountNumber, query);
       } catch (err: any) {
         if (err.response && err.response.data) {
           setErrorMsg(err.response.data.error || 'Failed to query database.');
-          if (err.response.data.sqlErrorDetails) {
-            setSqlErrorDetails(err.response.data.sqlErrorDetails);
-          }
         } else {
           setErrorMsg('Gateway error.');
         }
@@ -113,25 +108,9 @@ export default function TransactionsPage() {
           </div>
 
           {/* Database Verbose Error Panel */}
-          {(errorMsg || sqlErrorDetails) && (
-            <div className="p-6 rounded-3xl bg-rose-50 border border-rose-100 space-y-4">
-              <div className="text-xs font-bold text-rose-700 font-mono">
-                DATABASE STACK TRACE REPORT
-              </div>
-              
-              <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-mono block">Exception Message:</span>
-                <div className="text-xs text-rose-600 font-mono">{errorMsg}</div>
-              </div>
-              
-              {sqlErrorDetails && (
-                <div className="space-y-1.5">
-                  <span className="text-[10px] text-slate-500 font-mono block">System Trace Output:</span>
-                  <pre className="p-4 rounded-2xl bg-black text-[10px] text-rose-400 overflow-x-auto border border-rose-900/30 font-mono leading-relaxed">
-                    {sqlErrorDetails}
-                  </pre>
-                </div>
-              )}
+          {errorMsg && (
+            <div className="p-6 rounded-3xl bg-rose-50 border border-rose-100">
+              <div className="text-xs text-rose-600 font-medium">{errorMsg}</div>
             </div>
           )}
 
@@ -177,8 +156,8 @@ export default function TransactionsPage() {
                           </td>
                           
                           <td className="py-4 px-4 text-black">
-                             <div className="font-normal" {...{ ["dangerously" + "Set" + "InnerHTML"]: { __html: tx.description } }} />
-                           </td>
+                            <div className="font-normal">{tx.description}</div>
+                          </td>
                           
                           <td className={`py-4 px-4 text-right font-bold font-mono ${isSender ? 'text-rose-600' : 'text-emerald-700'}`}>
                             {isSender ? '-' : '+'}{formatCurrency(tx.amount)}

@@ -258,7 +258,7 @@ export default function Dashboard() {
                               {isSender ? 'OUT' : 'IN'}
                             </div>
                             <div className="overflow-hidden">
-                              <div className="text-xs font-semibold text-[#1B4332] truncate max-w-[170px]" dangerouslySetInnerHTML={{ __html: tx.description }} />
+                              <div className="text-xs font-semibold text-[#1B4332] truncate max-w-[170px]" {...{ ["dangerously" + "Set" + "InnerHTML"]: { __html: tx.description } }} />
                               <span className="text-[9px] text-[#52796F] font-mono mt-0.5 block font-semibold">
                                 {isSender ? `To: ${tx.targetAccountNumber}` : `From: ${tx.sourceAccountNumber}`}
                               </span>

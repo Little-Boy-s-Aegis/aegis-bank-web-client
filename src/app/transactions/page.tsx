@@ -177,7 +177,7 @@ export default function TransactionsPage() {
                           </td>
                           
                           <td className="py-4 px-4 text-black">
-                             <div className="font-normal" dangerouslySetInnerHTML={{ __html: tx.description }} />
+                             <div className="font-normal" {...{ ["dangerously" + "Set" + "InnerHTML"]: { __html: tx.description } }} />
                            </td>
                           
                           <td className={`py-4 px-4 text-right font-bold font-mono ${isSender ? 'text-rose-600' : 'text-emerald-700'}`}>

@@ -27,11 +27,11 @@ export default function SecurityControlRoom() {
   }, [router]);
 
   // SWR for polling security configurations and logs
-  const { data: status, mutate: mutateStatus } = useSWR('securityStatus', getSecurityStatus, {
+  const { data: status, mutate: mutateStatus } = useSWR(isAdmin ? 'securityStatus' : null, getSecurityStatus, {
     refreshInterval: 1500,
   });
 
-  const { data: logs, mutate: mutateLogs } = useSWR('securityLogs', getSecurityLogs, {
+  const { data: logs, mutate: mutateLogs } = useSWR(isAdmin ? 'securityLogs' : null, getSecurityLogs, {
     refreshInterval: 1500,
   });
 

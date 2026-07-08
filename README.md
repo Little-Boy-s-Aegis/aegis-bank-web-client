@@ -64,3 +64,13 @@ docker build -t aegis-bank-frontend .
 docker run -d -p 3000:3000 --name aegis-frontend-service aegis-bank-frontend
 ```
 The container is configured as a standalone Next.js server, exposing port `3000`.
+
+---
+
+## 🔒 Security Hardening & Mitigations
+
+* **HSTS & Permissions-Policy**: Added Strict-Transport-Security and Permissions-Policy headers to secure browser interactions and satisfy compliance audits.
+* **Fingerprint Elimination**: Disabled the `X-Powered-By: Next.js` header in the custom Next.js server configuration to minimize server fingerprinting disclosure.
+* **Component Resiliency**: Implemented a global React `ErrorBoundary` page to gracefully handle runtime render exceptions without revealing stack traces.
+* **Vulnerability Defenses**: Strengthened transaction tables and user profile views against Stored XSS reflection and customer details information leakage.
+

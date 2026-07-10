@@ -98,13 +98,17 @@ export default function TransferPage() {
         description: cleanDescription,
       });
 
-      setSuccess(`Transfer completed. Reference ID: ${result.transactionId}`);
+      setSuccess(`Transfer completed. Reference ID: ${result.transactionId}. Logging out securely for transaction safety...`);
       setTargetAccount('');
       setAmount('');
       setDescription('');
       
-      // Update account SWR cache
-      mutateAccount();
+      // Clear token and user cookies/storage, then redirect to login page after a brief delay
+      setTimeout(() => {
+        tokenStorage.removeItem('token');
+        tokenStorage.removeItem('user');
+        router.replace('/login');
+      }, 3000);
     } catch (err: any) {
       if (err.response) {
         setError(err.response.data.error || 'Transfer declined by the banking server.');

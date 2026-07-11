@@ -64,7 +64,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      if (isIpBanResponse(error)) {
+      if (error.response.status === 403 || isIpBanResponse(error)) {
         redirectToBannedPage();
         return Promise.reject(error);
       }

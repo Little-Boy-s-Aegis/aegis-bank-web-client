@@ -67,10 +67,46 @@ The container is configured as a standalone Next.js server, exposing port `3000`
 
 ---
 
-## 🔒 Security Hardening & Mitigations
+## Security Hardening and Mitigations
 
 * **HSTS & Permissions-Policy**: Added Strict-Transport-Security and Permissions-Policy headers to secure browser interactions and satisfy compliance audits.
 * **Fingerprint Elimination**: Disabled the `X-Powered-By: Next.js` header in the custom Next.js server configuration to minimize server fingerprinting disclosure.
 * **Component Resiliency**: Implemented a global React `ErrorBoundary` page to gracefully handle runtime render exceptions without revealing stack traces.
 * **Vulnerability Defenses**: Strengthened transaction tables and user profile views against Stored XSS reflection and customer details information leakage.
 
+---
+
+## Tech Stack
+
+| Component | Version |
+|---|---|
+| Next.js | 16.2.10 |
+| React | 19.2.4 |
+| TypeScript | 5 |
+| TailwindCSS | v4 |
+| Axios | 1.18.1 |
+| SWR | 2.4.2 |
+| Testing | Jest 30.4.2 |
+| Docker | node:20-alpine multi-stage |
+
+---
+
+## Deployment Info
+
+In the full ecosystem, this service runs as the `fe-web` container on port 3000. Nginx routes all `/` requests to this service. See [aegis-bank-deployment](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment) for the full Docker Compose setup.
+
+---
+
+## Related Repositories
+
+| Repository | Description |
+|---|---|
+| [aegis-bank-deployment](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment) | Docker Compose orchestration |
+| [aegis-bank-backend](https://github.com/Little-Boy-s-Aegis/aegis-bank-backend) | Spring Boot banking API |
+| [aegis-bank-mobile-app](https://github.com/Little-Boy-s-Aegis/aegis-bank-mobile-app) | Flutter mobile app |
+| [dashboard](https://github.com/Little-Boy-s-Aegis/dashboard) | SOC Dashboard - Go backend + React frontend |
+| [agent-layer-1](https://github.com/Little-Boy-s-Aegis/agent-layer-1) | AI Sensor Agents |
+| [agent-layer-2](https://github.com/Little-Boy-s-Aegis/agent-layer-2) | Meta Analyzer / SOAR Orchestrator prompts |
+| [aegis-soar-engine](https://github.com/Little-Boy-s-Aegis/aegis-soar-engine) | SOAR Decision Engine |
+| [aegis-staging-sandbox](https://github.com/Little-Boy-s-Aegis/aegis-staging-sandbox) | Staging Sandbox |
+| [aegis-bank-terraform](https://github.com/Little-Boy-s-Aegis/aegis-bank-terraform) | Terraform IaC |

@@ -1,76 +1,163 @@
-# Aegis Bank Web Client Portal
+# Aegis Bank Web Client
 
-This is the responsive, modern web portal client for the Aegis Secure Banking Platform. Built using **Next.js 15**, React, TailwindCSS, and SWR, it connects to the core banking API and features a custom Security Control panel.
+Customer and administrator web portal for the Little Boy's Aegis banking
+demonstration. It is a Next.js 16 App Router application that talks to the
+Spring Boot banking API and links the banking experience to the SOC dashboard.
 
----
+> This repository is designed for a controlled attack-and-defense demo. The
+> security toggles and simulated vulnerable states are not production banking
+> features.
+
+## Features
+
+- Customer registration and JWT-based login
+- Account overview and recent activity
+- Funds transfer with client-side validation
+- Searchable transaction history
+- Administrator attack/defense control panel
+- Global banned-IP handling and forced session cleanup
+- Responsive dark banking interface
+- Reverse-proxy integration for the bank API and SOC dashboard
+- Security headers and standalone production output
+
+## Application Routes
+
+| Route | Purpose |
+|---|---|
+| `/` | Redirect to login or dashboard based on session state |
+| `/login` | Customer/admin authentication |
+| `/register` | Demo account registration |
+| `/dashboard` | Account summary and recent transactions |
+| `/transfer` | Submit a bank transfer |
+| `/transactions` | View and search transaction history |
+| `/admin/security` | Inspect and toggle demo security controls |
+| `/banned` | Terminal page for clients blocked by the Aegis controls |
+| `/soc/*` | Proxy to the separate SOC dashboard frontend |
+
+## Architecture and Request Flow
+
+```text
+browser
+  |
+  +--> Next.js pages/components
+  |       `--> typed API modules --> Axios client
+  |                                  |-- adds Bearer token
+  |                                  `-- handles 401 / banned 403
+  |
+  +--> /api-bank/* --> Spring Boot bank API
+  +--> /api/*      --> Go SOC API
+  `--> /soc/*      --> React SOC dashboard
+```
+
+The application always calls same-origin paths. `next.config.ts` rewrites those
+paths to the appropriate services, avoiding browser CORS configuration during
+local development and container deployment.
 
 ## Prerequisites
-Ensure you have the following installed locally:
-- **Node.js 18+** (Recommended: LTS version 20+)
-- **NPM** (comes with Node) or **Yarn**
 
----
+- Node.js 20 or newer
+- npm
+- `aegis-bank-backend` on port `8080` for banking operations
+- Optional `dashboard` backend/frontend on ports `8082` and `3001`
 
-## Running the Web Portal (Direct / Host Mode)
+## Run Locally
 
-### 1. Install Dependencies
-Navigate to the `FE_Web` folder and install packages:
 ```bash
-cd FE_Web
-npm install
-```
-
-### 2. Start Dev Server
-Start the local development server:
-```bash
+npm ci
 npm run dev
 ```
-Open **`http://localhost:3000`** in your browser to view the portal.
 
-### 3. Build & Start in Production Mode
-Compile the application into static files and a optimized standalone Node server:
+Open <http://localhost:3000>. The default development targets are:
+
+| Variable | Default | Used by |
+|---|---|---|
+| `BE_BACKEND_URL` | `http://localhost:8080` | `/api-bank/*` rewrite |
+| `DASHBOARD_BACKEND_URL` | `http://localhost:8082` | `/api/*` rewrite |
+| `DASHBOARD_FRONTEND_URL` | `http://localhost:3001` | `/soc/*` rewrite |
+
+Override them when the services are elsewhere:
+
 ```bash
-# Build
-npm run build
-
-# Start production server
-npm run start
+BE_BACKEND_URL=http://127.0.0.1:8080 \
+DASHBOARD_BACKEND_URL=http://127.0.0.1:8082 \
+DASHBOARD_FRONTEND_URL=http://127.0.0.1:3001 \
+npm run dev
 ```
 
----
+## Available Commands
 
-## Reverse Proxy and Gateway Routing
-
-By default, the Next.js portal is configured with dev rewrites inside [next.config.ts](file:///d:/hackathon/FE_Web/next.config.ts) to forward backend requests:
-- `/api-bank/:path*` -> Proxies to Java Backend (`http://localhost:8080`)
-- `/api/:path*` -> Proxies to Go SOC Backend (`http://localhost:8082`)
-- `/soc/:path*` -> Proxies to React SOC Dashboard (`http://localhost:3001`)
-
-If you are running the unified docker-compose environment, all requests are handled directly by **Nginx on port 80** and Next.js acts as a regular client.
-
----
-
-## Containerized Deployment (Docker)
-
-To compile and run Next.js inside a hardened production container:
-
-### 1. Build the Docker Image
 ```bash
-docker build -t aegis-bank-frontend .
+npm run dev       # Next.js development server
+npm run lint      # ESLint
+npm test          # Jest test runner
+npm run build     # Optimized standalone build
+npm run start     # Run the production build
 ```
 
-### 2. Run the Container
+Run `npm run build` after route, rewrite, or server-component changes; it is the
+most complete type and production-configuration check in this repository.
+
+## Docker
+
+Backend targets are build arguments because rewrites are compiled into the
+standalone artifact:
+
 ```bash
-docker run -d -p 3000:3000 --name aegis-frontend-service aegis-bank-frontend
+docker build \
+  --build-arg BE_BACKEND_URL=http://aegis-be-backend:8080 \
+  --build-arg DASHBOARD_BACKEND_URL=http://aegis-dashboard-backend:8082 \
+  --build-arg DASHBOARD_FRONTEND_URL=http://aegis-dashboard-frontend:3001 \
+  -t aegis-bank-web-client .
+
+docker run --rm -p 3000:3000 aegis-bank-web-client
 ```
-The container is configured as a standalone Next.js server, exposing port `3000`.
 
----
+The image uses Next.js standalone output and removes package managers from the
+runtime stage. For the complete network and gateway configuration, use
+`aegis-bank-deployment`.
 
-## 🔒 Security Hardening & Mitigations
+## Bank API Usage
 
-* **HSTS & Permissions-Policy**: Added Strict-Transport-Security and Permissions-Policy headers to secure browser interactions and satisfy compliance audits.
-* **Fingerprint Elimination**: Disabled the `X-Powered-By: Next.js` header in the custom Next.js server configuration to minimize server fingerprinting disclosure.
-* **Component Resiliency**: Implemented a global React `ErrorBoundary` page to gracefully handle runtime render exceptions without revealing stack traces.
-* **Vulnerability Defenses**: Strengthened transaction tables and user profile views against Stored XSS reflection and customer details information leakage.
+| Module | Endpoint(s) |
+|---|---|
+| `src/api/auth.ts` | login and registration |
+| `src/api/accounts.ts` | account details |
+| `src/api/transactions.ts` | transfer and transaction history |
+| `src/api/security.ts` | security status, toggles, logs, and log cleanup |
+| `src/api/tokenStorage.ts` | cookie/session storage lifecycle |
 
+All banking calls are sent through `/api-bank`. The Axios interceptor attaches
+the token, clears authentication state on `401`, and redirects a blocked client
+to `/banned` when the gateway or API returns the Aegis ban signal.
+
+## Repository Layout
+
+```text
+src/
+├── api/                 # Typed API clients and token storage
+├── app/                 # App Router pages, layout, CSS, and error boundary
+└── components/          # Shared navigation and sidebar
+public/                  # Static assets
+next.config.ts           # Headers, rewrites, and standalone output
+Dockerfile               # Multi-stage production image
+jest.config.js           # Jest configuration
+```
+
+## Security Model
+
+- `X-Powered-By` is disabled and the application emits CSP, frame, content-type,
+  referrer, HSTS, and permissions headers.
+- Authentication data is cleared from `localStorage`; the current client uses a
+  Secure/SameSite cookie plus `sessionStorage` fallback.
+- A JavaScript-readable token is still vulnerable to successful XSS. A
+  production design should prefer server-issued `HttpOnly` cookies and CSRF
+  protections.
+- HSTS and `Secure` cookies require HTTPS outside local development.
+- Authorization, transaction validation, and IP blocking must be enforced by
+  the backend/gateway; UI checks are not security boundaries.
+
+## Related Repositories
+
+- [`aegis-bank-backend`](https://github.com/Little-Boy-s-Aegis/aegis-bank-backend) — bank API
+- [`dashboard`](https://github.com/Little-Boy-s-Aegis/dashboard) — SOC application
+- [`aegis-bank-deployment`](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment) — full local stack

@@ -1,9 +1,9 @@
 # Aegis Bank Web Client
 
-[![Git Clones](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Little-Boy-s-Aegis/aegis-bank-deployment/main/aegis-bank-web-client-clone-badge.json)](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment)
-[![Unique Cloners](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Little-Boy-s-Aegis/aegis-bank-deployment/main/aegis-bank-web-client-uniques-badge.json)](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment)
-[![Release Downloads](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Little-Boy-s-Aegis/aegis-bank-deployment/main/downloads-badge.json)](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment/releases)
-[![Stars](https://img.shields.io/github/stars/Little-Boy-s-Aegis/aegis-bank-web-client?style=flat&color=F59E0B&logo=github&label=stars)](https://github.com/Little-Boy-s-Aegis/aegis-bank-web-client/stargazers)
+[![Git Clones](https://badgen.net/https/cdn.jsdelivr.net/gh/Little-Boy-s-Aegis/aegis-bank-deployment@main/aegis-bank-web-client-clone-badge.json)](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment)
+[![Unique Cloners](https://badgen.net/https/cdn.jsdelivr.net/gh/Little-Boy-s-Aegis/aegis-bank-deployment@main/aegis-bank-web-client-uniques-badge.json)](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment)
+[![Release Downloads](https://badgen.net/https/cdn.jsdelivr.net/gh/Little-Boy-s-Aegis/aegis-bank-deployment@main/downloads-badge.json)](https://github.com/Little-Boy-s-Aegis/aegis-bank-deployment/releases)
+[![Stars](https://badgen.net/github/stars/Little-Boy-s-Aegis/aegis-bank-web-client?color=f59e0b)](https://github.com/Little-Boy-s-Aegis/aegis-bank-web-client/stargazers)
 
 Customer and administrator web portal for the Little Boy's Aegis banking
 demonstration. It is a Next.js 16 App Router application that talks to the

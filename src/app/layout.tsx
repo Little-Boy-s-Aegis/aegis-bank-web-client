@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${dmSans.variable}`}>
+    <html lang="en" data-theme="light" className={`${fraunces.variable} ${dmSans.variable}`} style={{colorScheme: 'light'}}>
       <body>
         {children}
       </body>

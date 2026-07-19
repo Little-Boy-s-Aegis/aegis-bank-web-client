@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+/* Force light mode - disable Tailwind v4 automatic dark mode */
+@custom-variant dark (&:is(.dark-mode-disabled *));
+
+html, :root {
+  color-scheme: light only;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light only;
+  }
+}
+
 :root {
   --background: #FAFAF5;
   --foreground: #000000;
